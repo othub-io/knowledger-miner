@@ -100,7 +100,7 @@ const requestBlockData = async (blockchain, miner_config) => {
       const dkg_blockchains = miner_config.dkg_blockchains;
       const epochs = miner_config.epochs;
       const query = `INSERT INTO asset_header (txn_id, progress, approver, blockchain, asset_data, ual, epochs) VALUES (UUID(),?,?,?,?,?,?)`;
-      const params = ["PENDING", null, dkg_blockchains[0].name ,assetData ,null, epochs];
+      const params = ["PENDING", null, dkg_blockchains[0].name ,JSON.stringify(assetData) ,null, epochs];
 
       await queryDB.getData(query, params);
 
