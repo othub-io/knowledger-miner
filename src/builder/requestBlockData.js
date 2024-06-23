@@ -90,10 +90,6 @@ const requestBlockData = async (blockchain, miner_config) => {
       value: tx.value.toString(),
     };
 
-
-    console.log(
-      `Validating asset from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
-    );
     const valid = validateAssetData(assetData);
 
     if (valid) {
@@ -103,10 +99,6 @@ const requestBlockData = async (blockchain, miner_config) => {
       const params = ["PENDING", null, dkg_blockchains[0].name ,JSON.stringify(assetData) ,null, epochs];
 
       await queryDB.getData(query, params);
-
-      console.log(
-        `Queueing asset for publishing from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
-      );
       return;
     }
   } catch (error) {

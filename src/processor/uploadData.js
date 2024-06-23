@@ -74,14 +74,15 @@ module.exports = {
         dkg = mainnet_dkg;
       }
 
+      console.log(data.asset_data)
       let data_obj;
       if (visibility === "private") {
         data_obj = {
-          private: data.asset_data,
+          private: JSON.parse(data.asset_data),
         };
       } else {
         data_obj = {
-          public: data.asset_data,
+          public: JSON.parse(data.asset_data),
         };
       }
 
