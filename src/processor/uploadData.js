@@ -70,14 +70,11 @@ module.exports = {
         throw new Error(`Found asset for ${data.blockchain} in ${environment} environment`);
       }
 
-      console.log('here1')
       let dkg = testnet_dkg;
       if (environment === "mainnet") {
         dkg = mainnet_dkg;
       }
 
-      console.log('here2')
-      console.log(data.asset_data)
       let data_obj;
       if (visibility === "private") {
         data_obj = {
@@ -89,13 +86,12 @@ module.exports = {
         };
       }
 
-      console.log('here3')
+      console.log(data_obj)
       const publicAssertionId = await dkg.assertion.getPublicAssertionId(
         data_obj
       );
       const publicAssertionSize = await dkg.assertion.getSizeInBytes(data_obj);
 
-      console.log('here4')
       const bid_suggestion = await dkg.network.getBidSuggestion(
         publicAssertionId,
         publicAssertionSize,
@@ -111,7 +107,6 @@ module.exports = {
         }
       );
 
-      console.log('here5')
       let asset_cost = Number(bid_suggestion.data) / 1e18
       if (
         asset_cost >
@@ -120,7 +115,6 @@ module.exports = {
         throw new Error(`Asset cost ${asset_cost} is greater than maximum allowed cost ${max_trac_cost}.`);
       }
 
-      console.log('here6')
       let dkg_create_result = await dkg.asset
         .create(data_obj, {
           environment: environment,
