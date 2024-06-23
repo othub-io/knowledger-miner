@@ -1,0 +1,11 @@
+[Unit]
+Description=Knowledger Builder
+
+[Service]
+Type=simple
+WorkingDirectory=/root/knowledger-miner/src/builder
+ExecStart=/root/knowledger-miner/knowledger-builder.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

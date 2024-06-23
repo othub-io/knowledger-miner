@@ -1,0 +1,11 @@
+[Unit]
+Description=Knowledger Processor
+
+[Service]
+Type=simple
+WorkingDirectory=/root/knowledger-miner/src/processor
+ExecStart=/root/knowledger-miner/knowledger-processor.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
