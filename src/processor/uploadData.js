@@ -78,18 +78,18 @@ module.exports = {
       let data_obj;
       if (visibility === "private") {
         data_obj = {
-          private: JSON.parse(data.asset_data),
+          private: JSON.parse(data.asset_data)
         };
       } else {
         data_obj = {
-          public: JSON.parse(data.asset_data),
+          public: JSON.parse(data.asset_data)
         };
       }
 
       console.log(data_obj)
       const publicAssertionId = await dkg.assertion.getPublicAssertionId(data_obj);
       const publicAssertionSize = await dkg.assertion.getSizeInBytes(data_obj);
-      console.log(publicAssertionSize)
+      
       const bid_suggestion = await dkg.network.getBidSuggestion(
         publicAssertionId,
         publicAssertionSize,
