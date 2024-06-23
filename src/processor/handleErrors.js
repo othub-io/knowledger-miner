@@ -18,7 +18,7 @@ module.exports = {
           paranet_workers[message.index].public_key
         }: Unexpected Error. ${message.error}. Abandoning...`
       );
-      query = `UPDATE txn_header SET progress = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
+      query = `UPDATE asset_header SET progress = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
       params = [
         "CREATE-ABANDONED",
         paranet_workers[message.index].public_key,

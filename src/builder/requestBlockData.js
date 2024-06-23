@@ -31,10 +31,6 @@ const requestBlockData = async (blockchain, miner_config) => {
   try {
     const web3 = new Web3(blockchain.rpc);
     const latestBlockNumber = await web3.eth.getBlockNumber();
-    console.log(
-      `Fetching blockchain: ${blockchain.name} - block: ${latestBlockNumber}`
-    );
-
     const block = await web3.eth.getBlock(latestBlockNumber, true);
     const txn_index = Math.floor(Math.random() * block.transactions.length);
     const tx = block.transactions[txn_index];
