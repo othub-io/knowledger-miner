@@ -37,7 +37,7 @@ setup_mysql() {
 
     # Execute MySQL commands using provided credentials
     if [[ -n "$mysql_password" ]]; then
-        mysql_cmd="sudo mysql -u $mysql_user -p$mysql_password -e"
+        mysql_cmd="sudo mysql -p$mysql_password -e"
     else
         mysql_cmd="sudo mysql -u $mysql_user -e"
     fi
