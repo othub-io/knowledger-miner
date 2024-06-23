@@ -1,5 +1,6 @@
 const { Web3 } = require("web3");
-const queryDB = require("./queryDB"); // Adjust the path as per your project structure
+const queryTypes = require("../../util/queryTypes.js");
+const queryDB = queryTypes.queryDB();
 
 const validateAssetData = (assetData) => {
   if (
