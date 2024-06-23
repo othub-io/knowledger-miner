@@ -6,7 +6,7 @@
   "db_pass": "admin",
   "db_name": "paranet_miner",
   "environment": "testnet",
-  "dkg_blockchain": "gnosis:10200",
+  "dkg_blockchains": [{"name": "gnosis:10200"}],
   "epochs": 1,
   "visibility": "public",
   "paranet_workers": [

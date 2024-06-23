@@ -3,7 +3,7 @@ const path = require('path');
 const configPath = path.resolve(__dirname, '../../config/.miner_config');
 const miner_config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const { Web3 } = require("web3");
-const dkg_blockchain = miner_config.dkg_blockchain
+const dkg_blockchains = miner_config.dkg_blockchains
 const epochs = miner_config.epochs
 
 const validateAssetData = (assetData) => {
@@ -100,7 +100,7 @@ const requestBlockData = async (blockchain) => {
 
     if (valid) {
       const query = `INSERT INTO asset_header (txn_id, progress, approver, blockchain, ual, epochs) VALUES (UUID(),?,?,?,?,?)`;
-      const params = ["PENDING", null, dkg_blockchain, null, epochs];
+      const params = ["PENDING", null, dkg_blockchains[0], null, epochs];
 
       await queryDB
         .getData(query, params)
