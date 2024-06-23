@@ -26,14 +26,14 @@ setup_repository() {
 setup_mysql() {
     echo "Configuring MySQL..."
 
-    # Start MySQL service
-    sudo service mysql start
-
     # Prompt for MySQL credentials if needed
     read -p "Enter MySQL username (default is root): " mysql_user
     mysql_user=${mysql_user:-root}
 
     read -s -p "Enter MySQL password for $mysql_user: " mysql_password
+
+    # Start MySQL service
+    sudo service mysql start
 
     # Execute MySQL commands using provided credentials
     if [[ -n "$mysql_password" ]]; then
@@ -42,21 +42,28 @@ setup_mysql() {
         mysql_cmd="sudo mysql -u $mysql_user -e"
     fi
 
-    # Update MySQL user authentication method
+    # Run SQL commands to set up database and user
     $mysql_cmd "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'admin';"
+    $mysql_cmd "CREATE DATABASE IF NOT EXISTS paranet_miner;"
+    $mysql_cmd "CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'admin';"
+    $mysql_cmd "GRANT ALL PRIVILEGES ON paranet_miner.* TO 'admin'@'localhost';"
     $mysql_cmd "FLUSH PRIVILEGES;"
+
+    echo "Creating asset_header table..."
+    $mysql_cmd "USE paranet_miner; CREATE TABLE IF NOT EXISTS asset_header (
+        txn_id VARCHAR(255) NOT NULL,
+        progress INT NOT NULL,
+        approver VARCHAR(255),
+        blockchain VARCHAR(255),
+        asset_data TEXT,
+        ual VARCHAR(255),
+        epochs INT,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (txn_id)
+    );"
 }
 
-# Function to set up MySQL authentication plugin in configuration file
-setup_mysql_auth_plugin() {
-    echo "Updating MySQL authentication plugin..."
-
-    # Edit MySQL configuration to set default authentication plugin
-    sudo sed -i '/^\[mysqld\]$/a default_authentication_plugin=mysql_native_password' /etc/mysql/mysql.conf.d/mysqld.cnf
-
-    # Restart MySQL service to apply changes
-    sudo service mysql restart
-}
 
 # Function to prompt user for .miner_config configuration
 configure_miner_config() {
@@ -183,7 +190,6 @@ main() {
     install_dependencies
     setup_repository
     setup_mysql
-    setup_mysql_auth_plugin
     configure_miner_config
     setup_processor_service
     setup_builder_service
