@@ -88,32 +88,32 @@ module.exports = {
         };
       }
 
-      console.log(data_obj)
-      const publicAssertionId = await dkg.assertion.getPublicAssertionId(data_obj);
-      const publicAssertionSize = await dkg.assertion.getSizeInBytes(data_obj);
+      // console.log(data_obj)
+      // const publicAssertionId = await dkg.assertion.getPublicAssertionId(data_obj);
+      // const publicAssertionSize = await dkg.assertion.getSizeInBytes(data_obj);
       
-      const bid_suggestion = await dkg.network.getBidSuggestion(
-        publicAssertionId,
-        publicAssertionSize,
-        {
-          epochsNum: data.epochs,
-          environment: environment,
-          blockchain: {
-            name: data.blockchain,
-            publicKey: paranet_workers[index].public_key,
-            privateKey: paranet_workers[index].private_key,
-          },
-          bidSuggestionRange: "low",
-        }
-      );
+      // const bid_suggestion = await dkg.network.getBidSuggestion(
+      //   publicAssertionId,
+      //   publicAssertionSize,
+      //   {
+      //     epochsNum: data.epochs,
+      //     environment: environment,
+      //     blockchain: {
+      //       name: data.blockchain,
+      //       publicKey: paranet_workers[index].public_key,
+      //       privateKey: paranet_workers[index].private_key,
+      //     },
+      //     bidSuggestionRange: "low",
+      //   }
+      // );
 
-      let asset_cost = Number(bid_suggestion.data) / 1e18
-      if (
-        asset_cost >
-        Number(max_trac_cost)
-      ) {
-        throw new Error(`Asset cost ${asset_cost} is greater than maximum allowed cost ${max_trac_cost}.`);
-      }
+      // let asset_cost = Number(bid_suggestion.data) / 1e18
+      // if (
+      //   asset_cost >
+      //   Number(max_trac_cost)
+      // ) {
+      //   throw new Error(`Asset cost ${asset_cost} is greater than maximum allowed cost ${max_trac_cost}.`);
+      // }
 
       let dkg_create_result = await dkg.asset
         .create(data_obj, {
