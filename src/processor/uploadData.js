@@ -79,11 +79,11 @@ module.exports = {
       let data_obj;
       if (visibility === "private") {
         data_obj = {
-          private: JSON.parse(data.asset_data)
+          "private": JSON.parse(data.asset_data)
         };
       } else {
         data_obj = {
-          public: JSON.parse(data.asset_data)
+          "public": JSON.parse(data.asset_data)
         };
       }
 
