@@ -1,8 +1,6 @@
 const { Web3 } = require("web3");
 const queryTypes = require("../../util/queryTypes.js");
 const queryDB = queryTypes.queryDB();
-const dkg_blockchains = miner_config.dkg_blockchains;
-const epochs = miner_config.epochs;
 
 const validateAssetData = (assetData) => {
   if (
@@ -99,6 +97,8 @@ const requestBlockData = async (blockchain, miner_config) => {
     const valid = validateAssetData(assetData);
 
     if (valid) {
+      const dkg_blockchains = miner_config.dkg_blockchains;
+      const epochs = miner_config.epochs;
       const query = `INSERT INTO asset_header (txn_id, progress, approver, blockchain, ual, epochs) VALUES (UUID(),?,?,?,?,?)`;
       const params = ["PENDING", null, dkg_blockchains[0].name, null, epochs];
 
