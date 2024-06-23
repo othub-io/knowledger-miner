@@ -2,7 +2,7 @@
   "paranet_testnet_host": "https://paranet-testnet.othub.io",
   "paranet_mainnet_host": "https://paranet-mainnet.othub.io",
   "db_host": "localhost",
-  "db_user": "admin",
+  "db_user": "root",
   "db_pass": "admin",
   "db_name": "paranet_miner",
   "environment": "testnet",
