@@ -87,11 +87,9 @@ module.exports = {
       }
 
       console.log(data_obj)
-      const publicAssertionId = await dkg.assertion.getPublicAssertionId(
-        JSON.stringify(data_obj)
-      );
-      const publicAssertionSize = await dkg.assertion.getSizeInBytes(JSON.stringify(data_obj));
-
+      const publicAssertionId = await dkg.assertion.getPublicAssertionId(data_obj);
+      const publicAssertionSize = await dkg.assertion.getSizeInBytes(data_obj);
+      console.log(publicAssertionSize)
       const bid_suggestion = await dkg.network.getBidSuggestion(
         publicAssertionId,
         publicAssertionSize,
