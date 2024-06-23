@@ -1,6 +1,8 @@
 {
   "paranet_testnet_host": "https://paranet-testnet.othub.io",
+  "paranet_testnet_port": "7318",
   "paranet_mainnet_host": "https://paranet-mainnet.othub.io",
+  "paranet_mainnet_port": "7317",
   "db_host": "localhost",
   "db_user": "root",
   "db_pass": "admin",

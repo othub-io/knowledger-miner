@@ -8,6 +8,8 @@ const DKGClient = require("dkg.js");
 const handleErrors = require("./handleErrors.js");
 const paranet_testnet_host = miner_config.paranet_testnet_host
 const paranet_mainnet_host = miner_config.paranet_mainnet_host
+const paranet_testnet_port = miner_config.paranet_testnet_port
+const paranet_mainnet_port = miner_config.paranet_mainnet_port
 const paranet_workers = miner_config.paranet_workers
 const environment = miner_config.environment
 const visibility = miner_config.visibility
@@ -15,14 +17,14 @@ const max_trac_cost = miner_config.max_trac_cost
 
 const testnet_node_options = {
   endpoint: paranet_testnet_host,
-  port: 443,
+  port: paranet_testnet_port,
   useSSL: true,
   maxNumberOfRetries: 100,
 };
 
 const mainnet_node_options = {
   endpoint: paranet_mainnet_host,
-  port: 443,
+  port: paranet_mainnet_port,
   useSSL: true,
   maxNumberOfRetries: 100,
 };
