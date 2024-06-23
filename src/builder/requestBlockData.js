@@ -1,10 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-const configPath = path.resolve(__dirname, '../../config/.miner_config');
-const miner_config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const { Web3 } = require("web3");
-const dkg_blockchains = miner_config.dkg_blockchains
-const epochs = miner_config.epochs
+const queryDB = require("./queryDB"); // Adjust the path as per your project structure
 
 const validateAssetData = (assetData) => {
   if (
@@ -31,7 +26,7 @@ const validateAssetData = (assetData) => {
   return true;
 };
 
-const requestBlockData = async (blockchain) => {
+const requestBlockData = async (blockchain, miner_config) => {
   try {
     const web3 = new Web3(blockchain.rpc);
     const latestBlockNumber = await web3.eth.getBlockNumber();
@@ -42,12 +37,7 @@ const requestBlockData = async (blockchain) => {
     const block = await web3.eth.getBlock(latestBlockNumber, true);
 
     const txn_index = Math.floor(Math.random() * block.transactions.length);
-
     const tx = block.transactions[txn_index];
-
-    // if(tx.event_data){
-
-    // }
 
     const assetData = {
       "@context": "http://schema.org",
@@ -99,26 +89,18 @@ const requestBlockData = async (blockchain) => {
     const valid = validateAssetData(assetData);
 
     if (valid) {
+      const dkg_blockchains = miner_config.dkg_blockchains;
+      const epochs = miner_config.epochs;
       const query = `INSERT INTO asset_header (txn_id, progress, approver, blockchain, ual, epochs) VALUES (UUID(),?,?,?,?,?)`;
       const params = ["PENDING", null, dkg_blockchains[0], null, epochs];
 
-      await queryDB
-        .getData(query, params)
-        .then((results) => {
-          //console.log('Query results:', results);
-          return results;
-          // Use the results in your variable or perform further operations
-        })
-        .catch((error) => {
-          console.error("Error retrieving data:", error);
-        });
-
+      await queryDB.getData(query, params);
       return;
     }
   } catch (error) {
     console.error("Error requesting block data:", error.message);
+    throw error; // Rethrow the error to handle it in the caller function
   }
 };
 
-// Call the function to fetch recent ETH transfers
-requestBlockData(blockchain);
+module.exports = requestBlockData;
