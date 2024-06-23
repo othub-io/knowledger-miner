@@ -77,11 +77,11 @@ module.exports = {
       let data_obj;
       if (visibility === "private") {
         data_obj = {
-          private: dkg_txn_data,
+          private: data.asset_data,
         };
       } else {
         data_obj = {
-          public: dkg_txn_data,
+          public: data.asset_data,
         };
       }
 
