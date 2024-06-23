@@ -6,7 +6,7 @@ install_dependencies() {
     sudo apt-get update
 
     echo "Installing Node.js..."
-    curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
     sudo apt-get install -y nodejs
 
     echo "Installing MySQL..."
