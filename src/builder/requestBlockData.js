@@ -1,6 +1,8 @@
 const { Web3 } = require("web3");
 const queryTypes = require("../../util/queryTypes.js");
 const queryDB = queryTypes.queryDB();
+const dkg_blockchains = miner_config.dkg_blockchains;
+const epochs = miner_config.epochs;
 
 const validateAssetData = (assetData) => {
   if (
@@ -32,13 +34,16 @@ const requestBlockData = async (blockchain, miner_config) => {
     const web3 = new Web3(blockchain.rpc);
     const latestBlockNumber = await web3.eth.getBlockNumber();
     console.log(
-      `Fetching transactions from block number: ${latestBlockNumber}`
+      `Fetching blockchain: ${blockchain.name} - block: ${latestBlockNumber}`
     );
 
     const block = await web3.eth.getBlock(latestBlockNumber, true);
-
     const txn_index = Math.floor(Math.random() * block.transactions.length);
     const tx = block.transactions[txn_index];
+
+    console.log(
+      `Building asset from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
+    );
 
     const assetData = {
       "@context": "http://schema.org",
@@ -87,15 +92,21 @@ const requestBlockData = async (blockchain, miner_config) => {
       value: tx.value.toString(),
     };
 
+
+    console.log(
+      `Validating asset from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
+    );
     const valid = validateAssetData(assetData);
 
     if (valid) {
-      const dkg_blockchains = miner_config.dkg_blockchains;
-      const epochs = miner_config.epochs;
       const query = `INSERT INTO asset_header (txn_id, progress, approver, blockchain, ual, epochs) VALUES (UUID(),?,?,?,?,?)`;
       const params = ["PENDING", null, dkg_blockchains[0].name, null, epochs];
 
       await queryDB.getData(query, params);
+
+      console.log(
+        `Queueing asset for publishing from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
+      );
       return;
     }
   } catch (error) {
