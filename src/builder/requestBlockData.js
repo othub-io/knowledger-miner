@@ -47,7 +47,7 @@ const requestBlockData = async (blockchain, miner_config) => {
       `Building asset from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
     );
 
-    const assetData = {
+    let assetData = {
       "@context": "http://schema.org",
       "@type": "Event",
       "name": `${blockchain.name} Transaction ${tx.hash}`,
@@ -94,7 +94,7 @@ const requestBlockData = async (blockchain, miner_config) => {
       "value": tx.value.toString(),
     };
 
-    const valid = validateAssetData(assetData);
+    const valid = await validateAssetData(assetData);
 
     if (valid) {
       const dkg_blockchains = miner_config.dkg_blockchains;
