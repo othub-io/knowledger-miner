@@ -31,13 +31,14 @@ setup_mysql() {
     mysql_user=${mysql_user:-root}
 
     read -s -p "Enter MySQL password for $mysql_user: " mysql_password
+    echo
 
     # Start MySQL service
     sudo service mysql start
 
     # Execute MySQL commands using provided credentials
     if [[ -n "$mysql_password" ]]; then
-        mysql_cmd="sudo mysql -p$mysql_password -e"
+        mysql_cmd="sudo mysql -u $mysql_user -p$mysql_password -e"
     else
         mysql_cmd="sudo mysql -u $mysql_user -e"
     fi
@@ -63,7 +64,6 @@ setup_mysql() {
         PRIMARY KEY (txn_id)
     );"
 }
-
 
 # Function to prompt user for .miner_config configuration
 configure_miner_config() {
@@ -158,7 +158,8 @@ configure_miner_config() {
 
     # Update the example config with user-provided values
     miner_config=$(jq --argjson workers "$paranet_workers_str" --arg environment "$environment" --arg dkg_blockchain "$dkg_blockchain" \
-                    '.PARANET_WORKERS = $workers | .BLOCKCHAIN_ENVIRONMENT = $environment | .DKG_BLOCKCHAIN = $dkg_blockchain' <<< "$example_config")
+                    --arg db_user "$mysql_user" --arg db_pass "$mysql_password" \
+                    '.paranet_workers = $workers | .environment = $environment | .dkg_blockchains = [$dkg_blockchain] | .db_user = $db_user | .db_pass = $db_pass' <<< "$example_config")
 
     # Save the updated config to .miner_config
     sudo mkdir -p config
