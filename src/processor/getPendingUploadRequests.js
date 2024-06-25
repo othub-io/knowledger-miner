@@ -9,6 +9,12 @@ const queryDB = queryTypes.queryDB();
 const dkg_blockchains = miner_config.dkg_blockchains
 const paranet_workers = miner_config.paranet_workers
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 module.exports = {
   getPendingUploadRequests: async function getPendingUploadRequests() {
     try {
@@ -49,6 +55,7 @@ module.exports = {
 
           if (Number(last_processed.length) === 0) {
             available_workers.push(worker);
+            await sleep(200);
             continue;
           }
 
@@ -78,6 +85,7 @@ module.exports = {
               });
 
               paranet_workers.push(worker);
+              await sleep(200);
             continue;
           }
 
@@ -105,6 +113,7 @@ module.exports = {
                 });
 
                 available_workers.push(worker);
+                await sleep(200);
               continue;
             }
           }
@@ -115,6 +124,7 @@ module.exports = {
             );
   
             await retryCreation.retryCreation(last_processed[0]);
+            await sleep(200);
             continue;
           }
 
@@ -124,6 +134,7 @@ module.exports = {
           ) {
             available_workers.push(worker);
           }
+          await sleep(200);
         }
 
         console.log(

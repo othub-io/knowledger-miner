@@ -71,14 +71,19 @@ module.exports = {
       console.log(
         `${paranet_workers[message.index].name} wallet ${
           paranet_workers[message.index].public_key
-        }: Unexpected Error. ${message.error}. Abandoning...`
+        }: Create failed. ${
+          message.error
+        }. Reverting to pending in 1 minute...`
       );
-      query = `UPDATE asset_header SET progress = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
+      await sleep(60000);
+
+      query = `UPDATE txn_header SET progress = ?, approver = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
       params = [
-        "CREATE-ABANDONED",
+        "PENDING",
+        null,
         paranet_workers[message.index].public_key,
         "PROCESSING",
-        message.blockchain,
+        message.blockchain
       ];
       await queryDB
         .getData(query, params)
