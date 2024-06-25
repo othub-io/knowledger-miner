@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const configPath = path.resolve(__dirname, '../../config/.miner_config');
 const miner_config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const retryCreation = require("./retryCreation.js");
 const queryTypes = require("../../util/queryTypes.js");
 const queryDB = queryTypes.queryDB();
 
@@ -77,6 +78,43 @@ module.exports = {
               });
 
               paranet_workers.push(worker);
+            continue;
+          }
+
+          if (last_processed[4]) {
+            if (last_processed[4].progress === "RETRY-CREATE") {
+              console.log(
+                `${worker.name} ${worker.public_key}: Create attempt failed 3 times. Abandoning creation...`
+              );
+              query = `UPDATE txn_header SET progress = ? WHERE progress = ? AND approver = ? and blockchain = ?`;
+              params = [
+                "CREATE-ABANDONED",
+                "RETRY-CREATE",
+                worker.public_key,
+                blockchain.name
+              ];
+              await queryDB
+                .getData(query, params)
+                .then((results) => {
+                  //console.log('Query results:', results);
+                  return results;
+                  // Use the results in your variable or perform further operations
+                })
+                .catch((error) => {
+                  console.error("Error retrieving data:", error);
+                });
+
+                available_workers.push(worker);
+              continue;
+            }
+          }
+          
+          if (last_processed[0].progress === "RETRY-CREATE") {
+            console.log(
+              `${wallet.name} wallet ${wallet.public_key}: Retrying failed asset creation...`
+            );
+  
+            await retryCreation.retryCreation(last_processed[0]);
             continue;
           }
 
