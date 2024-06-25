@@ -29,11 +29,19 @@ const validateAssetData = (assetData) => {
 
 const requestBlockData = async (blockchain, miner_config) => {
   try {
-    const web3 = new Web3(blockchain.rpc);
-    const latestBlockNumber = await web3.eth.getBlockNumber();
-    const block = await web3.eth.getBlock(latestBlockNumber, true);
-    const txn_index = Math.floor(Math.random() * block.transactions.length);
-    const tx = block.transactions[txn_index];
+    let web3 = new Web3(blockchain.rpc);
+    let latestBlockNumber = await web3.eth.getBlockNumber();
+    let block = await web3.eth.getBlock(latestBlockNumber, true);
+
+    if(!block){
+      console.log(
+        `Unable to get block from ${blockchain.name} RPC: ${blockchain.rpc}`
+      );
+      return;
+    }
+
+    let txn_index = Math.floor(Math.random() * block.transactions.length)
+    let tx = block.transactions[txn_index];
 
     console.log(
       `Building asset from blockchain: ${blockchain.name} - block ${latestBlockNumber} - tx: ${txn_index +1} / ${block.transactions.length}`
