@@ -84,17 +84,16 @@ const requestBlockData = async (blockchain, miner_config) => {
       "r": tx.r,
       "s": tx.s,
       "blockNumber": tx.blockNumber.toString(),
-      "chainId": tx.chainId ? tx.chainId.toString() : null,
+      "chainId": tx.chainId ? tx.chainId.toString() : "",
       "gas": tx.gas.toString(),
       "gasPrice": tx.gasPrice.toString(),
       "nonce": tx.nonce.toString(),
       "transactionIndex": tx.transactionIndex.toString(),
-      "type": tx.type ? tx.type.toString() : null,
+      "type": tx.type ? tx.type.toString() : "",
       "v": tx.v.toString(),
       "value": tx.value.toString(),
-    };
+    };    
 
-    console.log(assetData)
     const valid = await validateAssetData(assetData);
 
     if (valid) {
