@@ -1,12 +1,14 @@
 {
   "paranet_testnet_host": "https://paranet-testnet.othub.io",
+  "paranet_testnet_port": "7318",
   "paranet_mainnet_host": "https://paranet-mainnet.othub.io",
+  "paranet_mainnet_port": "7317",
   "db_host": "localhost",
-  "db_user": "admin",
+  "db_user": "root",
   "db_pass": "admin",
   "db_name": "paranet_miner",
   "environment": "testnet",
-  "dkg_blockchain": "gnosis:10200",
+  "dkg_blockchains": [{"name": "gnosis:10200"}],
   "epochs": 1,
   "visibility": "public",
   "paranet_workers": [
@@ -19,7 +21,7 @@
       "chain_id": "1",
       "block_time_sec": "12",
       "rpc": "https://rpc.flashbots.net",
-      "explorer": "",
+      "explorer": "https://etherscan.io/",
       "network": "mainnet",
       "contracts": [
         {
@@ -46,7 +48,7 @@
       "chain_id": "100",
       "block_time_sec": "5.6",
       "rpc": "https://gnosis-rpc.publicnode.com",
-      "explorer": "",
+      "explorer": "https://gnosisscan.io/",
       "network": "mainnet"
     },
     {
@@ -55,7 +57,7 @@
       "chain_id": "2043",
       "block_time_sec": "12",
       "rpc": "https://astrosat-parachain-rpc.origin-trail.network/",
-      "explorer": "",
+      "explorer": "https://neuroweb.subscan.io/",
       "network": "mainnet"
     },
     {
@@ -64,7 +66,7 @@
       "chain_id": "8453",
       "block_time_sec": "2",
       "rpc": "https://base.llamarpc.com",
-      "explorer": "",
+      "explorer": "https://basescan.org/",
       "network": "mainnet"
     },
     {
@@ -73,34 +75,34 @@
       "chain_id": "17000",
       "block_time_sec": "12",
       "rpc": "https://ethereum-holesky-rpc.publicnode.com",
-      "explorer": "",
+      "explorer": "https://holesky.etherscan.io/",
       "network": "testnet"
     },
     {
-      "enabled": "false",
+      "enabled": "true",
       "name": "Chiado",
       "chain_id": "10200",
-      "block_time_sec": "5.6",
+      "block_time_sec": "6",
       "rpc": "https://rpc.chiadochain.net",
-      "explorer": "",
+      "explorer": "https://gnosis-chiado.blockscout.com/",
       "network": "testnet"
     },
     {
-      "enabled": "false",
+      "enabled": "true",
       "name": "NeuroWeb Testnet",
       "chain_id": "20430",
       "block_time_sec": "12",
       "rpc": "https://lofar-testnet.origin-trail.network",
-      "explorer": "",
+      "explorer": "https://neuroweb-testnet.subscan.io/",
       "network": "testnet"
     },
     {
-      "enabled": "false",
+      "enabled": "true",
       "name": "Base Testnet",
       "chain_id": "84531",
-      "block_time_sec": "2",
+      "block_time_sec": "12",
       "rpc": "https://base-goerli.public.blastapi.io",
-      "explorer": "",
+      "explorer": "https://goerli.basescan.org/",
       "network": "testnet"
     }
   ],

@@ -6,7 +6,7 @@ install_dependencies() {
     sudo apt-get update
 
     echo "Installing Node.js..."
-    curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
     sudo apt-get install -y nodejs
 
     echo "Installing MySQL..."
@@ -31,6 +31,7 @@ setup_mysql() {
     mysql_user=${mysql_user:-root}
 
     read -s -p "Enter MySQL password for $mysql_user: " mysql_password
+    echo
 
     # Start MySQL service
     sudo service mysql start
@@ -52,7 +53,7 @@ setup_mysql() {
     echo "Creating asset_header table..."
     $mysql_cmd "USE paranet_miner; CREATE TABLE IF NOT EXISTS asset_header (
         txn_id VARCHAR(255) NOT NULL,
-        progress INT NOT NULL,
+        progress TEXT NOT NULL,
         approver VARCHAR(255),
         blockchain VARCHAR(255),
         asset_data TEXT,
@@ -63,7 +64,6 @@ setup_mysql() {
         PRIMARY KEY (txn_id)
     );"
 }
-
 
 # Function to prompt user for .miner_config configuration
 configure_miner_config() {
@@ -158,7 +158,8 @@ configure_miner_config() {
 
     # Update the example config with user-provided values
     miner_config=$(jq --argjson workers "$paranet_workers_str" --arg environment "$environment" --arg dkg_blockchain "$dkg_blockchain" \
-                    '.PARANET_WORKERS = $workers | .BLOCKCHAIN_ENVIRONMENT = $environment | .DKG_BLOCKCHAIN = $dkg_blockchain' <<< "$example_config")
+                    --arg db_user "$mysql_user" --arg db_pass "$mysql_password" \
+                    '.paranet_workers = $workers | .environment = $environment | .dkg_blockchains = [$dkg_blockchain] | .db_user = $db_user | .db_pass = $db_pass' <<< "$example_config")
 
     # Save the updated config to .miner_config
     sudo mkdir -p config
