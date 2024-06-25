@@ -4,7 +4,6 @@ const configPath = path.resolve(__dirname, "../../config/.miner_config");
 const miner_config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 const queryTypes = require("../../util/queryTypes");
 const queryDB = queryTypes.queryDB();
-
 const paranet_workers = miner_config.paranet_workers;
 
 function sleep(ms) {
@@ -64,7 +63,7 @@ module.exports = {
         const params = [
           "RETRY-CREATE",
           null,
-          dkg_blockchains[0].name,
+          message.blockchain,
           JSON.stringify(message.assetData),
           null,
           message.epochs,
