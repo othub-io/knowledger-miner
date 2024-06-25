@@ -132,7 +132,6 @@ module.exports = {
           return result;
         })
         .catch(async (error) => {
-          console.log(error)
           error_obj = {
             error: error.message,
             index: index,

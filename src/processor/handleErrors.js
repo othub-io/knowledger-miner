@@ -7,6 +7,12 @@ const queryDB = queryTypes.queryDB();
 
 const paranet_workers = miner_config.paranet_workers;
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 module.exports = {
   handleError: async function handleError(message) {
     try {
