@@ -33,9 +33,9 @@ const requestBlockData = async (blockchain, miner_config) => {
     let latestBlockNumber = await web3.eth.getBlockNumber();
     let block = await web3.eth.getBlock(latestBlockNumber, true);
 
-    if(!block){
+    if(!block.transactions){
       console.log(
-        `Unable to get block from ${blockchain.name} RPC: ${blockchain.rpc}`
+        `Unable to get block transactions from ${blockchain.name} RPC: ${blockchain.rpc}`
       );
       return;
     }
