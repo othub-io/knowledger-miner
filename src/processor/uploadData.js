@@ -159,6 +159,7 @@ module.exports = {
       );
       return;
     } catch (error) {
+      console.log(error)
       let message = JSON.parse(error.message);
       await handleErrors.handleError(message);
     }
