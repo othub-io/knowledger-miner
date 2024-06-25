@@ -146,7 +146,6 @@ module.exports = {
             request: "RETRY-CREATE",
             epochs: data.epochs,
             asset_data: data.asset_data,
-            asset_data: data.asset_data
           };
           throw new Error(JSON.stringify(error_obj));
         });

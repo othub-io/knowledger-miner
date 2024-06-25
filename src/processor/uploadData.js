@@ -137,6 +137,9 @@ module.exports = {
             error: error.message,
             index: index,
             blockchain: data.blockchain,
+            request: "RETRY-CREATE",
+            epochs: data.epochs,
+            asset_data: data.asset_data,
           };
           throw new Error(JSON.stringify(error_obj));
         });
