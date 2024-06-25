@@ -94,6 +94,7 @@ const requestBlockData = async (blockchain, miner_config) => {
       "value": tx.value.toString(),
     };
 
+    console.log(assetData)
     const valid = await validateAssetData(assetData);
 
     if (valid) {
