@@ -120,8 +120,7 @@ module.exports = {
 
           //not processing, not transfering, not retrying transfer
           if (
-            last_processed[0].progress !== "PROCESSING" &&
-            last_processed[0].progress !== "CREATED"
+            last_processed[0].progress !== "PROCESSING"
           ) {
             available_workers.push(worker);
           }
