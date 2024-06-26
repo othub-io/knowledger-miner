@@ -41,7 +41,7 @@ module.exports = {
         for (const worker of paranet_workers) {
           query = `select txn_id,progress,approver,blockchain,asset_data,epochs,updated_at,created_at,ual FROM asset_header WHERE approver = ? AND blockchain = ? order by updated_at DESC LIMIT 5`;
           params = [worker.public_key, dkg_blockchain.name];
-          last_processed = await queryDB
+          let last_processed = await queryDB
             .getData(query, params)
             .then((results) => {
               //console.log('Query results:', results);
@@ -54,7 +54,7 @@ module.exports = {
 
 
           if (Number(last_processed.length) === 0) {
-            available_workers.push(worker);
+            await available_workers.push(worker);
             await sleep(200);
             continue;
           }
@@ -84,7 +84,7 @@ module.exports = {
                 console.error("Error retrieving data:", error);
               });
 
-              paranet_workers.push(worker);
+              await paranet_workers.push(worker);
               await sleep(200);
             continue;
           }
@@ -112,7 +112,7 @@ module.exports = {
                   console.error("Error retrieving data:", error);
                 });
 
-                available_workers.push(worker);
+                await available_workers.push(worker);
                 await sleep(200);
               continue;
             }
@@ -120,7 +120,7 @@ module.exports = {
           
           if (last_processed[0].progress === "RETRY-CREATE") {
             console.log(
-              `${wallet.name} wallet ${wallet.public_key}: Retrying failed asset creation...`
+              `${worker.name} wallet ${worker.public_key}: Retrying failed asset creation...`
             );
   
             await retryCreation.retryCreation(last_processed[0]);
@@ -132,7 +132,7 @@ module.exports = {
           if (
             last_processed[0].progress !== "PROCESSING"
           ) {
-            available_workers.push(worker);
+            await available_workers.push(worker);
           }
           await sleep(200);
         }
@@ -149,7 +149,7 @@ module.exports = {
           console.log(`${dkg_blockchain.name} has no pending requests.`);
         } else {
           request[0].approver = available_workers[0].public_key;
-          pending_requests.push(request[0]);
+          await pending_requests.push(request[0]);
         }
       }
 
