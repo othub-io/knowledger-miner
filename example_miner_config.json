@@ -106,6 +106,6 @@
       "network": "testnet"
     }
   ],
-  "cycle_time_sec": 2,
+  "cycle_time_sec": 1,
   "max_trac_cost": 0.1
 }
