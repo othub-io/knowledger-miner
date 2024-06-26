@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const configPath = path.resolve(__dirname, '../../config/.miner_config');
-const miner_config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const fs = require("fs");
+const path = require("path");
+const configPath = path.resolve(__dirname, "../../config/.miner_config");
+const miner_config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 const retryCreation = require("./retryCreation.js");
 const queryTypes = require("../../util/queryTypes.js");
 const queryDB = queryTypes.queryDB();
 
-const dkg_blockchains = miner_config.dkg_blockchains
-const paranet_workers = miner_config.paranet_workers
+const dkg_blockchains = miner_config.dkg_blockchains;
+const paranet_workers = miner_config.paranet_workers;
 
 module.exports = {
   getPendingUploadRequests: async function getPendingUploadRequests() {
@@ -46,7 +46,6 @@ module.exports = {
               console.error("Error retrieving data:", error);
             });
 
-
           if (Number(last_processed.length) === 0) {
             available_workers.push(worker);
             continue;
@@ -65,7 +64,13 @@ module.exports = {
               `${worker.name} wallet ${worker.public_key}: Processing for over 10 minutes. Rolling back to pending...`
             );
             query = `UPDATE asset_header SET progress = ?, approver = ? WHERE approver = ? AND progress = ? and blockchain = ?`;
-            params = ["PENDING", null, worker.public_key, "PROCESSING", dkg_blockchain.name];
+            params = [
+              "PENDING",
+              null,
+              worker.public_key,
+              "PROCESSING",
+              dkg_blockchain.name,
+            ];
             await queryDB
               .getData(query, params)
               .then((results) => {
@@ -77,7 +82,7 @@ module.exports = {
                 console.error("Error retrieving data:", error);
               });
 
-              await paranet_workers.push(worker);
+            await paranet_workers.push(worker);
             continue;
           }
 
@@ -91,7 +96,7 @@ module.exports = {
                 "CREATE-ABANDONED",
                 "RETRY-CREATE",
                 worker.public_key,
-                blockchain.name
+                blockchain.name,
               ];
               await queryDB
                 .getData(query, params)
@@ -104,24 +109,22 @@ module.exports = {
                   console.error("Error retrieving data:", error);
                 });
 
-                available_workers.push(worker);
+              available_workers.push(worker);
               continue;
             }
           }
-          
+
           if (last_processed[0].progress === "RETRY-CREATE") {
             console.log(
               `${worker.name} wallet ${worker.public_key}: Retrying failed asset creation...`
             );
-  
+
             await retryCreation.retryCreation(last_processed[0]);
             continue;
           }
 
           //not processing, not transfering, not retrying transfer
-          if (
-            last_processed[0].progress !== "PROCESSING"
-          ) {
+          if (last_processed[0].progress !== "PROCESSING") {
             available_workers.push(worker);
           }
         }
@@ -139,6 +142,19 @@ module.exports = {
         } else {
           request[0].approver = available_workers[0].public_key;
           pending_requests.push(request[0]);
+
+          query = `UPDATE asset_header SET progress = ?, approver = ? WHERE txn_id = ?`;
+          params = ["PROCESSING", available_workers[0].public_key, request[0].txn_id];
+          await queryDB
+            .getData(query, params)
+            .then((results) => {
+              //console.log('Query results:', results);
+              return results;
+              // Use the results in your variable or perform further operations
+            })
+            .catch((error) => {
+              console.error("Error retrieving data:", error);
+            });
         }
       }
 
