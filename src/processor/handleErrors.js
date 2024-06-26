@@ -4,8 +4,13 @@ const configPath = path.resolve(__dirname, "../../config/.miner_config");
 const miner_config = JSON.parse(fs.readFileSync(configPath, "utf8"));
 const queryTypes = require("../../util/queryTypes");
 const queryDB = queryTypes.queryDB();
-
 const paranet_workers = miner_config.paranet_workers;
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 module.exports = {
   handleError: async function handleError(message) {
@@ -58,7 +63,7 @@ module.exports = {
         const params = [
           "RETRY-CREATE",
           null,
-          dkg_blockchains[0].name,
+          message.blockchain,
           JSON.stringify(message.assetData),
           null,
           message.epochs,
@@ -71,14 +76,19 @@ module.exports = {
       console.log(
         `${paranet_workers[message.index].name} wallet ${
           paranet_workers[message.index].public_key
-        }: Unexpected Error. ${message.error}. Abandoning...`
+        }: Create failed. ${
+          message.error
+        }. Reverting to pending in 1 minute...`
       );
-      query = `UPDATE asset_header SET progress = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
+      await sleep(60000);
+
+      query = `UPDATE txn_header SET progress = ?, approver = ? WHERE approver = ? AND progress = ? AND blockchain = ?`;
       params = [
-        "CREATE-ABANDONED",
+        "PENDING",
+        null,
         paranet_workers[message.index].public_key,
         "PROCESSING",
-        message.blockchain,
+        message.blockchain
       ];
       await queryDB
         .getData(query, params)

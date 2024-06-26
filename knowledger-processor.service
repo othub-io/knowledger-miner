@@ -6,6 +6,8 @@ Type=simple
 WorkingDirectory=/root/knowledger-miner/src/processor
 ExecStart=/root/knowledger-miner/knowledger-processor.sh
 Restart=on-failure
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

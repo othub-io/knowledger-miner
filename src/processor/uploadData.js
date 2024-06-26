@@ -39,19 +39,6 @@ module.exports = {
         (obj) => obj.public_key == data.approver
       );
 
-      let query = `UPDATE asset_header SET progress = ?, approver = ? WHERE txn_id = ?`;
-      let params = ["PROCESSING", data.approver, data.txn_id];
-      await queryDB
-        .getData(query, params)
-        .then((results) => {
-          //console.log('Query results:', results);
-          return results;
-          // Use the results in your variable or perform further operations
-        })
-        .catch((error) => {
-          console.error("Error retrieving data:", error);
-        });
-
       console.log(
         `${paranet_workers[index].name} wallet ${paranet_workers[index].public_key}: Creating next asset on ${data.blockchain}.`
       );
@@ -132,11 +119,13 @@ module.exports = {
           return result;
         })
         .catch(async (error) => {
-          console.log(error)
           error_obj = {
             error: error.message,
             index: index,
             blockchain: data.blockchain,
+            request: "RETRY-CREATE",
+            epochs: data.epochs,
+            asset_data: data.asset_data,
           };
           throw new Error(JSON.stringify(error_obj));
         });
@@ -159,7 +148,6 @@ module.exports = {
       );
       return;
     } catch (error) {
-      console.log(error)
       let message = JSON.parse(error.message);
       await handleErrors.handleError(message);
     }
