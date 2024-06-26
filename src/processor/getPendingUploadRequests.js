@@ -9,12 +9,6 @@ const queryDB = queryTypes.queryDB();
 const dkg_blockchains = miner_config.dkg_blockchains
 const paranet_workers = miner_config.paranet_workers
 
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
 module.exports = {
   getPendingUploadRequests: async function getPendingUploadRequests() {
     try {
@@ -22,7 +16,7 @@ module.exports = {
       let query;
       let params;
       let pending_requests = [];
-      for (const dkg_blockchain of dkg_blockchains) {
+      for (let dkg_blockchain of dkg_blockchains) {
         query =
           "select txn_id,progress,approver,blockchain,asset_data,epochs,updated_at,created_at FROM asset_header WHERE progress = ? AND blockchain = ? ORDER BY created_at ASC LIMIT 1";
         params = ["PENDING", dkg_blockchain.name];
@@ -38,7 +32,7 @@ module.exports = {
           });
 
         let available_workers = [];
-        for (const worker of paranet_workers) {
+        for (let worker of paranet_workers) {
           query = `select txn_id,progress,approver,blockchain,asset_data,epochs,updated_at,created_at,ual FROM asset_header WHERE approver = ? AND blockchain = ? order by updated_at DESC LIMIT 5`;
           params = [worker.public_key, dkg_blockchain.name];
           let last_processed = await queryDB
@@ -54,8 +48,7 @@ module.exports = {
 
 
           if (Number(last_processed.length) === 0) {
-            await available_workers.push(worker);
-            await sleep(200);
+            available_workers.push(worker);
             continue;
           }
 
@@ -85,7 +78,6 @@ module.exports = {
               });
 
               await paranet_workers.push(worker);
-              await sleep(200);
             continue;
           }
 
@@ -112,8 +104,7 @@ module.exports = {
                   console.error("Error retrieving data:", error);
                 });
 
-                await available_workers.push(worker);
-                await sleep(200);
+                available_workers.push(worker);
               continue;
             }
           }
@@ -124,7 +115,6 @@ module.exports = {
             );
   
             await retryCreation.retryCreation(last_processed[0]);
-            await sleep(200);
             continue;
           }
 
@@ -132,9 +122,8 @@ module.exports = {
           if (
             last_processed[0].progress !== "PROCESSING"
           ) {
-            await available_workers.push(worker);
+            available_workers.push(worker);
           }
-          await sleep(200);
         }
 
         console.log(
@@ -149,7 +138,7 @@ module.exports = {
           console.log(`${dkg_blockchain.name} has no pending requests.`);
         } else {
           request[0].approver = available_workers[0].public_key;
-          await pending_requests.push(request[0]);
+          pending_requests.push(request[0]);
         }
       }
 
